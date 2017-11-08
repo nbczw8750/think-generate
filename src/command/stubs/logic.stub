@@ -1,0 +1,36 @@
+<?php
+namespace {%namespace%};
+
+use app\system\logic\Base;
+use think\exception\ClassNotFoundException;
+
+class {%className%} extends Base
+{
+   /**
+    * 实例化model
+    * @param string $name
+    * @param string $common
+    * @return \app\{%moduleName%}\model\{%className%}
+    */
+   public function modelInit($name = "{%className%}" , $common = 'common'){
+       if (strpos($name, '/')) {
+           list($module, $name) = explode('/', $name, 2);
+           $class = "\\app\\$module\\model\\$name";
+       }else{
+           $module = "{%moduleName%}";
+           $class = "\\app\\$module\\model\\$name";
+       }
+       if (class_exists($class)) {
+           $model = new $class();
+       } else {
+           $class = str_replace('\\' . $module . '\\', '\\' . $common . '\\', $class);
+           if (class_exists($class)) {
+               $model = new $class();
+           } else {
+               throw new ClassNotFoundException('class not exists:' . $class, $class);
+           }
+       }
+       return $model;
+   }
+
+}

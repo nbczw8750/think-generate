@@ -1,0 +1,18 @@
+<?php
+namespace {%namespace%};
+
+use app\system\validate\Base;
+
+class {%className%} extends Base
+{
+    protected $rule = [
+        //TODO:
+    ];
+    protected $message = [
+        //TODO:
+    ];
+    protected $scene = [
+        'add' => '',
+        'edit' => ''
+    ];
+}

@@ -54,18 +54,21 @@ abstract class Generate extends Command
 
     }
 
+
     protected function buildClass($name)
     {
         $stub = file_get_contents($this->getStub());
 
         $namespace = trim(implode('\\', array_slice(explode('\\', $name), 0, -1)), '\\');
+        $moduleName = $this->getModuleName($namespace);
 
         $class = str_replace($namespace . '\\', '', $name);
 
-        return str_replace(['{%className%}', '{%namespace%}', '{%app_namespace%}'], [
+        return str_replace(['{%className%}', '{%namespace%}', '{%app_namespace%}','{%moduleName%}'], [
             $class,
             $namespace,
             App::$namespace,
+            $moduleName
         ], $stub);
 
     }
@@ -105,6 +108,35 @@ abstract class Generate extends Command
     protected function getNamespace($appNamespace, $module)
     {
         return $module ? ($appNamespace . '\\' . $module) : $appNamespace;
+    }
+
+    protected function getModuleName($namespace)
+    {
+        if (Config::get('app_multi_module')) {
+            $arr = explode('\\',$namespace);
+            return $arr[1];
+        }else{
+            return null;
+        }
+    }
+
+    protected function getTableName($tableName){
+        return $this->parseName($tableName);
+    }
+
+    /**
+     * 字符串命名风格转换
+     * type 0 将Java风格转换为C的风格 1 将C风格转换为Java的风格
+     * @param string $name 字符串
+     * @param integer $type 转换类型
+     * @return string
+     */
+    protected function parseName($name, $type = 0) {
+        if ($type) {
+            return ucfirst(preg_replace_callback('/_([a-zA-Z])/', function ($match) {return strtoupper($match[1]);}, $name));
+        } else {
+            return strtolower(trim(preg_replace("/[A-Z]/", "_\\0", $name), "_"));
+        }
     }
 
 }

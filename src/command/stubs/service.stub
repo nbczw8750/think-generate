@@ -1,0 +1,62 @@
+<?php
+namespace {%namespace%};
+
+use app\system\service\Base;
+use think\exception\ClassNotFoundException;
+
+class {%className%} extends Base
+{
+   /**
+    * 实例化logic
+    * @param string $name
+    * @param string $common
+    * @return \app\{%moduleName%}\logic\{%className%}
+    */
+   public function logicInit($name = "{%className%}" , $common = 'common'){
+       if (strpos($name, '/')) {
+           list($module, $name) = explode('/', $name, 2);
+           $class = "\\app\\$module\\logic\\$name";
+       }else{
+           $module = "{%moduleName%}";
+           $class = "\\app\\$module\\logic\\$name";
+       }
+       if (class_exists($class)) {
+           $model = new $class();
+       } else {
+           $class = str_replace('\\' . $module . '\\', '\\' . $common . '\\', $class);
+           if (class_exists($class)) {
+               $model = new $class();
+           } else {
+               throw new ClassNotFoundException('class not exists:' . $class, $class);
+           }
+       }
+       return $model;
+   }
+
+   /**
+    * 实例化validate
+    * @param string $name
+    * @param string $common
+    * @return \app\{%moduleName%}\validate\{%className%}
+    */
+   public function validateInit($name = "{%className%}" , $common = 'common'){
+       if (strpos($name, '/')) {
+           list($module, $name) = explode('/', $name, 2);
+           $class = "\\app\\$module\\validate\\$name";
+       }else{
+           $module = "{%moduleName%}";
+           $class = "\\app\\$module\\validate\\$name";
+       }
+       if (class_exists($class)) {
+           $model = new $class();
+       } else {
+           $class = str_replace('\\' . $module . '\\', '\\' . $common . '\\', $class);
+           if (class_exists($class)) {
+               $model = new $class();
+           } else {
+               throw new ClassNotFoundException('class not exists:' . $class, $class);
+           }
+       }
+       return $model;
+   }
+}

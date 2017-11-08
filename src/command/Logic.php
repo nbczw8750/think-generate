@@ -11,26 +11,36 @@
 
 namespace nbczw8750\generate\command;
 
+use think\App;
+use think\Config;
 use nbczw8750\generate\Generate;
+use think\console\input\Option;
 
-class Model extends Generate
+class Logic extends Generate
 {
-    protected $type = "Model";
+
+    protected $type = "Logic";
 
     protected function configure()
     {
         parent::configure();
-        $this->setName('generate:model')
-            ->setDescription('Create a new model class');
+        $this->setName('generate:logic')
+            ->addOption('plain', null, Option::VALUE_NONE, 'Generate an empty service class.')
+            ->setDescription('Create a new resource service class');
     }
 
     protected function getStub()
     {
-        return __DIR__ . '/stubs/model.stub';
+        if ($this->input->getOption('plain')) {
+            return $this->input->getOption('plain');
+        }
+
+        return __DIR__ . '/stubs/logic.stub';
     }
 
     protected function getNamespace($appNamespace, $module)
     {
-        return parent::getNamespace($appNamespace, $module) . '\model';
+        return parent::getNamespace($appNamespace, $module) . '\logic';
     }
+
 }

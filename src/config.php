@@ -9,4 +9,10 @@
 
 \think\Console::addDefaultCommands([
     "nbczw8750\\generate\\command\\Model",
+    "nbczw8750\\generate\\command\\Controller",
+    "nbczw8750\\generate\\command\\Service",
+    "nbczw8750\\generate\\command\\Logic",
+    "nbczw8750\\generate\\command\\Validate",
+    "nbczw8750\\generate\\command\\Config",
+    "nbczw8750\\generate\\command\\Common",
 ]);

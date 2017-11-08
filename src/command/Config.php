@@ -11,26 +11,22 @@
 
 namespace nbczw8750\generate\command;
 
+use think\App;
 use nbczw8750\generate\Generate;
 
-class Model extends Generate
+class Config extends Generate
 {
-    protected $type = "Model";
+    protected $type = "Config";
 
     protected function configure()
     {
         parent::configure();
-        $this->setName('generate:model')
-            ->setDescription('Create a new model class');
+        $this->setName('generate:config')
+            ->setDescription('Create a new config file');
     }
 
     protected function getStub()
     {
-        return __DIR__ . '/stubs/model.stub';
-    }
-
-    protected function getNamespace($appNamespace, $module)
-    {
-        return parent::getNamespace($appNamespace, $module) . '\model';
+        return __DIR__ . '/stubs/config.stub';
     }
 }

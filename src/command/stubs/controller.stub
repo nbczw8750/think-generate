@@ -1,11 +1,7 @@
 <?php
-
 namespace {%namespace%};
 
-use think\Controller;
-use think\Request;
-
-class {%className%} extends Controller
+class {%className%} extends \app\system\controller\Admin
 {
     /**
      * 显示资源列表
@@ -14,29 +10,63 @@ class {%className%} extends Controller
      */
     public function index()
     {
-        //
+        cookie('__forward__', $_SERVER['REQUEST_URI']);
+        $map = $query = array();
+        /*
+         * TODO 筛选条件 组装示例
+        $title = input("title");
+        //示例
+        $query['status'] = input("status");
+        $query['interface_title'] = trim(input("interface_title"));
+        $map = function($db) use(&$query) {
+            if(is_numeric($query['status'])){
+                $db->where("status",$query['status']);
+            }
+            if ($query['interface_title']){
+                $db->where("interface_title","like","%".$query['interface_title']."%");
+            }
+        };
+        */
+
+        $order = array('id'=>'desc');
+        $s{%className%} = new \{%app_namespace%}\{%moduleName%}\service\{%className%}();
+        $list = $s{%className%}->lists($map,$order,array("config"=>array(
+            "query"=> $query
+        )));
+        $data = array(
+            'list' => $list,
+            'page' => $list->render(),
+        );
+        $this->assign($data);
+        $this->assign("query",$query);
+        return $this->fetch("index",[],config("view_replace_str"));
     }
 
     /**
-     * 显示创建资源表单页.
+     * 创建资源.
      *
      * @return \think\Response
      */
-    public function create()
+    public function add()
     {
-        //
+        if(IS_POST){
+            $data = input('post.');
+            $s{%className%}= new \{%app_namespace%}\{%moduleName%}\service\{%className%}();
+            $result = $s{%className%}->add($data);
+            if(false === $result){
+                $this->error($s{%className%}->getError());
+            }else{
+                //记录行为
+                action_log('add_{%tableName%}', '{%className%}', $result, session('user_auth.uid'));
+                write_log("管理员[".session('user_auth.uid')."]新增了资源[{$result}]");
+                $this->success(lang("add success"),url("index"));
+            }
+        }else{
+            return $this->fetch("edit",[],config("view_replace_str"));
+        }
     }
 
-    /**
-     * 保存新建的资源
-     *
-     * @param  \think\Request  $request
-     * @return \think\Response
-     */
-    public function save(Request $request)
-    {
-        //
-    }
+
 
     /**
      * 显示指定的资源
@@ -46,31 +76,39 @@ class {%className%} extends Controller
      */
     public function read($id)
     {
-        //
+        $s{%className%} = new \{%app_namespace%}\{%moduleName%}\service\{%className%}();
+        $data = $s{%className%}->read($id);
+        $this->assign("data",$data);
+        return $this->fetch("read",[],config("view_replace_str"));
     }
 
     /**
-     * 显示编辑资源表单页.
+     * 编辑资源.
      *
      * @param  int  $id
      * @return \think\Response
      */
     public function edit($id)
     {
-        //
+        $s{%className%} = new \{%app_namespace%}\{%moduleName%}\service\{%className%}();
+        if(IS_POST){
+            $data = input('post.');
+            $result = $s{%className%}->edit($data);
+            if(false === $result){
+                $this->error($s{%className%}->getError());
+            }else{
+                //记录行为
+                action_log('edit_{%tableName%}', '{%className%}', $result, session('user_auth.uid'));
+                write_log("管理员[".session('user_auth.uid')."]编辑资源[{$id}]");
+                $this->success(lang("edit success"),cookie('__forward__') );
+            }
+        }else{
+            $data = $s{%className%}->read($id);
+            $this->assign("data",$data);
+            return $this->fetch("edit",[],config("view_replace_str"));
+        }
     }
 
-    /**
-     * 保存更新的资源
-     *
-     * @param  \think\Request  $request
-     * @param  int  $id
-     * @return \think\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
 
     /**
      * 删除指定资源
@@ -80,6 +118,104 @@ class {%className%} extends Controller
      */
     public function delete($id)
     {
-        //
+        $s{%className%} = new \{%app_namespace%}\{%moduleName%}\service\{%className%}();
+        $result = $s{%className%}->del($id);
+        if (false === $result) {
+            $this->error(lang("delete error"));
+        } else {
+            //记录行为
+            action_log('delete_{%tableName%}', '{%className%}', $result, session('user_auth.uid'));
+            write_log("管理员[".session('user_auth.uid')."]删除资源[{$id}]");
+            $this->success(lang("delete success"));
+        }
+    }
+
+    /**
+     * 启用禁用
+     * @param $id
+     * @param $status
+     */
+    public function change($id,$status){
+        $s{%className%} = new \{%app_namespace%}\{%moduleName%}\service\{%className%}();
+        $data = [];
+        $data["id"] = is_array($id) ? array('in',$id) : $id;
+        $data['status'] = $status;
+        $result = $s{%className%}->change($data);
+        $msg = "";
+        if ($result) {
+            switch ($status){
+                case 1 :
+                    $msg = lang("enable success");
+                    //记录行为
+                    action_log('resume_{%tableName%}', '{%className%}', $result, session('user_auth.uid'));
+                    break;
+                case 0 :
+                    $msg = lang("disable success");
+                    //记录行为
+                    action_log('forbid_{%tableName%}', '{%className%}', $result, session('user_auth.uid'));
+                    break;
+            }
+            $this->success($msg);
+        } else {
+            switch ($status){
+                case 1 : $msg = lang("enable error");
+                    break;
+                case 0 : $msg = lang("disable error");
+                    break;
+            }
+            $this->error($msg);
+        }
+    }
+    /**
+     * 回收站
+     * @return mixed
+     */
+    public function recycle(){
+        $map = array();
+        $map["trashed"] = "only";
+        $s{%className%} = new \{%app_namespace%}\{%moduleName%}\service\{%className%}();
+        $list = $s{%className%}->lists($map);
+        $data = array(
+            'list' => $list,
+            'page' => $list->render(),
+        );
+        $this->assign($data);
+        return $this->fetch("recycle",[],config("view_replace_str"));
+    }
+    /**
+     * 还原
+     * @param $id
+     */
+    public function permit($id){
+        $map = array();
+        $map['id'] = is_array($id) ? array('in',$id) : $id;
+        $s{%className%} = new \{%app_namespace%}\{%moduleName%}\service\{%className%}();
+        $result = $s{%className%}->permit($map);
+        if(false === $result){
+            $this->error(lang("permit error"));
+        }else{
+            //记录行为
+            action_log('permit_{%tableName%}', '{%className%}', $result, session('user_auth.uid'));
+            write_log("管理员[".session('user_auth.uid')."]还原资源[{$id}]");
+            $this->success(lang("permit success"));
+        }
+    }
+    /**
+     * 销毁
+     * @param $id
+     */
+    public function remove($id){
+        $map = array();
+        $map['id'] = is_array($id) ? array('in',$id) : $id;
+        $s{%className%} = new \{%app_namespace%}\{%moduleName%}\service\{%className%}();
+        $result = $s{%className%}->del($map,true);
+        if(false === $result){
+            $this->error(lang("remove error"));
+        }else{
+            //记录行为
+            action_log('remove_{%tableName%}', '{%className%}', $result, session('user_auth.uid'));
+            write_log("管理员[".session('user_auth.uid')."]销毁资源[{$id}]");
+            $this->success(lang("remove success"));
+        }
     }
 }

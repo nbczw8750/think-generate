@@ -13,24 +13,24 @@ namespace nbczw8750\generate\command;
 
 use nbczw8750\generate\Generate;
 
-class Model extends Generate
+class Validate extends Generate
 {
-    protected $type = "Model";
+    protected $type = "Validate";
 
     protected function configure()
     {
         parent::configure();
-        $this->setName('generate:model')
-            ->setDescription('Create a new model class');
+        $this->setName('generate:validate')
+            ->setDescription('Create a new validate class');
     }
 
     protected function getStub()
     {
-        return __DIR__ . '/stubs/model.stub';
+        return __DIR__ . '/stubs/validate.stub';
     }
 
     protected function getNamespace($appNamespace, $module)
     {
-        return parent::getNamespace($appNamespace, $module) . '\model';
+        return parent::getNamespace($appNamespace, $module) . '\validate';
     }
 }

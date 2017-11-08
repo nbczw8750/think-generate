@@ -1,10 +1,22 @@
 <?php
-
 namespace {%namespace%};
 
-use think\Model;
+use app\system\model\Base;
 
-class {%className%} extends Model
+class {%className%} extends Base
 {
-    //
+    //自动完成定义
+    protected $auto = ['updater_uid'];
+    protected $insert = ['creator_uid'];
+    protected $update = [];
+
+    protected $autoWriteTimestamp = true;//自动生成创建时间和更新时间
+
+    protected  function setUpdaterUidAttr($value,$data){
+        return isset($value) ? $value : session('user_auth.uid');
+    }
+
+    protected function setCreatorUidAttr($value,$data){
+        return isset($value) ? $value : session('user_auth.uid');
+    }
 }
