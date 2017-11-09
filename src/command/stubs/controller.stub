@@ -182,40 +182,4 @@ class {%className%} extends \app\system\controller\Admin
         $this->assign($data);
         return $this->fetch("recycle",[],config("view_replace_str"));
     }
-    /**
-     * 还原
-     * @param $id
-     */
-    public function permit($id){
-        $map = array();
-        $map['id'] = is_array($id) ? array('in',$id) : $id;
-        $s{%className%} = new \{%app_namespace%}\{%moduleName%}\service\{%className%}();
-        $result = $s{%className%}->permit($map);
-        if(false === $result){
-            $this->error(lang("permit error"));
-        }else{
-            //记录行为
-            action_log('permit_{%tableName%}', '{%className%}', $result, session('user_auth.uid'));
-            write_log("管理员[".session('user_auth.uid')."]还原资源[{$id}]");
-            $this->success(lang("permit success"));
-        }
-    }
-    /**
-     * 销毁
-     * @param $id
-     */
-    public function remove($id){
-        $map = array();
-        $map['id'] = is_array($id) ? array('in',$id) : $id;
-        $s{%className%} = new \{%app_namespace%}\{%moduleName%}\service\{%className%}();
-        $result = $s{%className%}->del($map,true);
-        if(false === $result){
-            $this->error(lang("remove error"));
-        }else{
-            //记录行为
-            action_log('remove_{%tableName%}', '{%className%}', $result, session('user_auth.uid'));
-            write_log("管理员[".session('user_auth.uid')."]销毁资源[{$id}]");
-            $this->success(lang("remove success"));
-        }
-    }
 }

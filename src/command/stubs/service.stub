@@ -60,34 +60,4 @@ class {%className%} extends Base
        return $model;
    }
 
-    /**
-     * 删除
-     * @param array|integer|string $where 条件
-     * @param bool $force false 软删除 true 真删除
-     * @return integer
-     */
-    public function del($where, $force = false){
-        $l = $this->logicInit();
-        $result = $l->del($where,$force);
-        if(false === $result){
-            $this->error = $l->getError();
-            return false;
-        }
-        return $result;
-    }
-
-   /**
-    * 恢复软删除的数据
-    * @param array|integer|string $where
-    * @return integer
-    */
-   public function permit($where=[]){
-       $l = $this->logicInit();
-       $result = $l->permit($where);
-       if(false === $result){
-           $this->error = $l->getError();
-           return false;
-       }
-       return true;
-   }
 }

@@ -53,5 +53,7 @@ php think generate:common test/common --stub code_template/config.stub
 ~~~
 
 ## 批量生成
+~~~
 参数单个生成命令一样，除了自定义模板参数目前只能指定一个文件
 php think generate:batch test/Blog --table blog
+~~~
