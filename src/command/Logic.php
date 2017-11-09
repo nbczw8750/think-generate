@@ -31,10 +31,15 @@ class Logic extends Generate
 
     protected function getStub()
     {
-        if ($this->input->getOption('plain')) {
-            return $this->input->getOption('plain');
+        $stub = $this->input->getOption('stub');
+        if ($stub){
+            if (file_exists($stub)){
+                return $stub;
+            }else{
+                $this->msg = "stub file non-existent";
+                return false;
+            }
         }
-
         return __DIR__ . '/stubs/logic.stub';
     }
 

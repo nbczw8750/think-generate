@@ -27,6 +27,15 @@ class Config extends Generate
 
     protected function getStub()
     {
+        $stub = $this->input->getOption('stub');
+        if ($stub){
+            if (file_exists($stub)){
+                return $stub;
+            }else{
+                $this->msg = "stub file non-existent";
+                return false;
+            }
+        }
         return __DIR__ . '/stubs/config.stub';
     }
 }

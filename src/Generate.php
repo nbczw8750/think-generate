@@ -6,7 +6,7 @@
 // +----------------------------------------------------------------------
 // | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
 // +----------------------------------------------------------------------
-// | Author: 刘志淳 <chun@engineer.com>
+// | Author: CC慕斯 <nbczw8750@qq.com>
 // +----------------------------------------------------------------------
 
 namespace nbczw8750\generate;
@@ -17,47 +17,95 @@ use think\console\Command;
 use think\console\Input;
 use think\console\input\Argument;
 use think\console\Output;
+use think\console\input\Option;
 
 abstract class Generate extends Command
 {
 
     protected $type;
+    protected $msg  = "";
 
     abstract protected function getStub();
 
     protected function configure()
     {
         $this->addArgument('name', Argument::REQUIRED, "The name of the class");
+        $this->addOption("stub",null,Option::VALUE_OPTIONAL, "The stub is template file path");
     }
 
     protected function execute(Input $input, Output $output)
     {
+        $this->make();
+        $this->output($this->msg);
 
-        $name = trim($input->getArgument('name'));
+    }
+    protected function output($msg){
+        $this->output->writeln($msg);
+    }
 
-        $classname = $this->getClassName($name);
+    /**
+     * 开始生成
+     * @return bool
+     */
+    public function make(){
+        $name = trim($this->input->getArgument('name'));
 
-        $pathname = $this->getPathName($classname);
+        $className = $this->getClassName($name);
+        $pathname = $this->getPathName($className);
 
         if (is_file($pathname)) {
-            $output->writeln('<error>' . $this->type . ' already exists!</error>');
+            $this->msg = '<error>' . $this->type . ' already exists!</error>';
             return false;
         }
-
         if (!is_dir(dirname($pathname))) {
             mkdir(strtolower(dirname($pathname)), 0755, true);
         }
 
-        file_put_contents($pathname, $this->buildClass($classname));
+        $content = $this->buildClass($className);
+        if (false === $content){
+            return false;
+        }
+        file_put_contents($pathname,$content);
 
-        $output->writeln('<info>' . $this->type . ' created successfully.</info>');
+        $this->msg = '<info>' . $this->type . ' created successfully.</info>';
+        return true;
 
     }
 
+    /**
+     * 设置input
+     * @param $input
+     */
+    public function setInput($input){
+        $this->input = $input;
+    }
 
+    /**
+     * 获取input
+     * @return Input
+     */
+    public function getInput(){
+        return $this->input;
+    }
+
+    //获取输出内容
+    public function getMsg(){
+        return $this->msg;
+    }
+
+
+    /**
+     * 创建内容
+     * @param $name
+     * @return mixed
+     */
     protected function buildClass($name)
     {
-        $stub = file_get_contents($this->getStub());
+        $stubPath = $this->getStub();
+        if (false === $stubPath){
+            return false;
+        }
+        $stub = file_get_contents($stubPath);
 
         $namespace = trim(implode('\\', array_slice(explode('\\', $name), 0, -1)), '\\');
         $moduleName = $this->getModuleName($namespace);
@@ -73,6 +121,11 @@ abstract class Generate extends Command
 
     }
 
+    /**
+     * 获取生成路径
+     * @param $name
+     * @return string
+     */
     protected function getPathName($name)
     {
         $name = str_replace(App::$namespace . '\\', '', $name);
@@ -80,6 +133,11 @@ abstract class Generate extends Command
         return APP_PATH . str_replace('\\', '/', $name) . '.php';
     }
 
+    /**
+     * 获取类名
+     * @param $name
+     * @return string
+     */
     protected function getClassName($name)
     {
         $appNamespace = App::$namespace;
@@ -105,11 +163,22 @@ abstract class Generate extends Command
         return $this->getNamespace($appNamespace, $module) . '\\' . $name;
     }
 
+    /**
+     * 获取命名空间
+     * @param $appNamespace
+     * @param $module
+     * @return string
+     */
     protected function getNamespace($appNamespace, $module)
     {
         return $module ? ($appNamespace . '\\' . $module) : $appNamespace;
     }
 
+    /**
+     * 获取模块名称
+     * @param $namespace
+     * @return null
+     */
     protected function getModuleName($namespace)
     {
         if (Config::get('app_multi_module')) {
@@ -120,6 +189,11 @@ abstract class Generate extends Command
         }
     }
 
+    /**
+     * 获取数据库表名
+     * @param $tableName
+     * @return string
+     */
     protected function getTableName($tableName){
         return $this->parseName($tableName);
     }

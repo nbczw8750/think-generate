@@ -15,4 +15,5 @@
     "nbczw8750\\generate\\command\\Validate",
     "nbczw8750\\generate\\command\\Config",
     "nbczw8750\\generate\\command\\Common",
+    "nbczw8750\\generate\\command\\Batch",
 ]);

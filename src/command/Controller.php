@@ -54,15 +54,24 @@ class Controller extends Generate
     }
     protected function getStub()
     {
+        $stub = $this->input->getOption('stub');
+        if ($stub){
+            if (file_exists($stub)){
+                return $stub;
+            }else{
+                $this->msg = "stub file non-existent";
+                return false;
+            }
+        }
         return __DIR__ . '/stubs/controller.stub';
     }
 
-    protected function getClassName($name)
+    public function getClassName($name)
     {
         return parent::getClassName($name) . (Config::get('controller_suffix') ? ucfirst(Config::get('url_controller_layer')) : '');
     }
 
-    protected function getNamespace($appNamespace, $module)
+    public function getNamespace($appNamespace, $module)
     {
         return parent::getNamespace($appNamespace, $module) . '\controller';
     }
