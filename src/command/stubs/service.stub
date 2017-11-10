@@ -6,13 +6,13 @@ use think\exception\ClassNotFoundException;
 
 class {%className%} extends Base
 {
-   /**
+    /**
     * 实例化logic
     * @param string $name
     * @param string $common
     * @return \app\{%moduleName%}\logic\{%className%}
     */
-   public function logicInit($name = "{%className%}" , $common = 'common'){
+    public function logicInit($name = "{%className%}" , $common = 'common'){
        if (strpos($name, '/')) {
            list($module, $name) = explode('/', $name, 2);
            $class = "\\app\\$module\\logic\\$name";
@@ -31,15 +31,15 @@ class {%className%} extends Base
            }
        }
        return $model;
-   }
+    }
 
-   /**
+    /**
     * 实例化validate
     * @param string $name
     * @param string $common
     * @return \app\{%moduleName%}\validate\{%className%}
     */
-   public function validateInit($name = "{%className%}" , $common = 'common'){
+    public function validateInit($name = "{%className%}" , $common = 'common'){
        if (strpos($name, '/')) {
            list($module, $name) = explode('/', $name, 2);
            $class = "\\app\\$module\\validate\\$name";
@@ -58,6 +58,6 @@ class {%className%} extends Base
            }
        }
        return $model;
-   }
+    }
 
 }

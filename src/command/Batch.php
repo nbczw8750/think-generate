@@ -11,8 +11,6 @@
 
 namespace nbczw8750\generate\command;
 
-use think\App;
-use think\Config;
 use nbczw8750\generate\Generate;
 use think\console\input\Option;
 use think\console\Input;

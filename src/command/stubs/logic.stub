@@ -6,13 +6,13 @@ use think\exception\ClassNotFoundException;
 
 class {%className%} extends Base
 {
-   /**
+    /**
     * 实例化model
     * @param string $name
     * @param string $common
     * @return \app\{%moduleName%}\model\{%className%}
     */
-   public function modelInit($name = "{%className%}" , $common = 'common'){
+    public function modelInit($name = "{%className%}" , $common = 'common'){
        if (strpos($name, '/')) {
            list($module, $name) = explode('/', $name, 2);
            $class = "\\app\\$module\\model\\$name";
@@ -31,6 +31,6 @@ class {%className%} extends Base
            }
        }
        return $model;
-   }
+    }
 
 }
