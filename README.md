@@ -50,7 +50,6 @@ php think generate:config test/config --stub code_template/config.stub
 php think generate:common test/common
 自定义模板生成,文件放在相对于think（项目根目录的路径）
 php think generate:common test/common --stub code_template/config.stub
-~~~
 
 创建模板文件
 执行下面的指令可以生成模板文件 （编辑页）
