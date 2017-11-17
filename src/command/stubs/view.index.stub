@@ -1,0 +1,142 @@
+{extend name="admin@public/base"/}
+{block name="content"}
+
+<div class="row">
+    <div class="panel panel-inverse">
+        <div class="panel-heading">
+            <!-- 按钮 -->
+            <div class="panel-heading-btn">
+                {if condition="check_auth('group_add')"}
+                <button type="button" class="btn btn-primary redirect-get" href="{:url('add')}">{:lang('add')}</button>
+                {/if}
+                <button type="button" class="btn btn-primary modal-get" href="{:url('modal')}">模态框</button>
+            </div>
+            <!-- 按钮 end -->
+
+            <ol class="breadcrumb ">
+                <li class="active">{$_SUB_MENU_TITLE|default='列表页'}</li>
+            </ol>
+        </div>
+        <div class="panel-body">
+            <div class="search-form">
+
+                <div class="form-inline search-collapse clearfix">
+                    <!-- 更多筛选 -->
+                    <div class=" " id="search-form-other" style=" display: inline-block">
+                        <div class="form-group form-group-sm  m-r-10 m-b-10">
+                            <label for="status">{:lang('status')}：</label>
+                            {:widget("system/Field/render",['field'=>['type'=>"select",'value'=>isset($query['status']) ? $query['status'] : '','class' => '','name'=>'status','extra'=>'"":'.lang('please select').',1:'.lang('enabled').',0:'.lang('disabled')  ],'data'=> isset($data) ? $data : [] ])}
+                        </div>
+
+                    </div>
+                    <script type="text/javascript">
+                        $(document).ready(function () { //更多筛选 改变后自动搜索
+                            $(".search-form").ccAutoTriggerSearch();
+                        });
+                    </script>
+                    <!-- 更多筛选 end -->
+                    <!-- 主筛选 -->
+                    <div class="form-group form-group-sm  m-r-10 m-b-10" style="float: right;margin-right: 0 !important;">
+                        <div class="input-group">
+                            {:widget("system/Field/render",['field'=>['type'=>"string",'value'=>input("get.username"),'name'=>'username','class' => '','placeholder'=>''.lang('please input').lang('username')],'data'=> isset($data) ? $data : [] ])}
+                            <span class="input-group-btn">
+                                <button class="btn btn-inverse  input-sm redirect-search" type="button" target-form=".search-form"
+                                        url="{:url(ACTION_NAME)}">{:lang('search')}
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                    <!-- 主筛选 end -->
+                </div>
+
+
+            </div>
+            <div class="table-responsive">
+                <!-- 批量操作 -->
+                <div class="batch-operate" style="border-bottom: none">
+                    {if condition="check_auth('change?status=1')"}
+                    <a class="btn-border  ajax-post confirm" confirm-msg="{:lang('confirm enabled',[lang('batch'),lang('user')])}" href="{:url('change?status=1')}" target-form=".ids">{:lang('batch')}{:lang('enabled')}</a>
+                    {/if}
+                </div>
+                {notempty name="list"}
+                <script>
+                    $(function () {
+                        $(".table-list").ccListCheck();
+                    });
+                </script>
+                {/notempty}
+                <!-- 批量操作 end -->
+
+                <!-- 列表 -->
+                <table class="table table-striped table-bordered table-hover table-list tablesorter">
+                    <thead>
+                    <tr>
+                        <th>{:lang('title')}</th>
+                        <th>{:lang('creator_uid')}</th>
+                        <th>{:lang('create_time')}</th>
+                        <th>{:lang('updater_uid')}</th>
+                        <th>{:lang('update_time')}</th>
+                        <th width="">{:lang('describe')}</th>
+                        <th width="">{:lang('status')}</th>
+                        <th width="">{:lang('operation')}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    {empty name="list"}
+                    <tr><td colspan="8"  align="center">{:lang('no data')}</td></tr>
+                    {else /}
+                    {volist name="list" id="vo"}
+                    <tr>
+                        <td>{$vo.title}</td>
+                        <td>{$vo.creator_uid}</td>
+                        <td>{$vo.create_time}</td>
+                        <td>{$vo.updater_uid}</td>
+                        <td>{$vo.update_time}</td>
+                        <td>{$vo.description}</td>
+                        <td>
+                            {if condition="$vo['status'] eq 1 AND  check_auth('change?status=0')"}
+                            <a href="{:url('change?status=0&id='.$vo['id'])}" class="confirm ajax-get" title="{:lang('disabled')}"><span class="on">{:config("template.list_enable")}&nbsp;{:lang('enabled')}</span></a>{:config("template.list_delimiter")}
+                            {/if}
+                            {if condition="$vo['status'] eq 0 AND  check_auth('change?status=1')"}
+                            <a href="{:url('change?status=1&id='.$vo['id'])}" class="confirm ajax-get" title="{:lang('enabled')}"><span class="off">{:config("template.list_disable")}&nbsp;{:lang('disabled')}</span></a>{:config("template.list_delimiter")}
+                            {/if}
+
+                        </td>
+                        <td>
+                            {if condition="check_auth('edit')"}
+                            <a href="{:url('edit?id='.$vo['id'])}" class="redirect-get" title="{:lang('edit')}">{:config("template.list_edit")}</a>{:config("template.list_delimiter")}
+                            {/if}
+                            {if condition="check_auth('delete')"}
+                            <a href="{:url('delete?id='.$vo['id'])}" class="confirm ajax-get" title="{:lang('delete')}">{:config("template.list_delete")}</a>{:config("template.list_delimiter")}
+                            {/if}
+                        </td>
+                    </tr>
+                    {/volist}
+                    {/empty}
+                    </tbody>
+                </table>
+                <!-- 列表 end -->
+            </div>
+
+            <!-- 分页 -->
+            <div class="clearfix pull-right">
+                {$page}
+            </div>
+            <!-- 分页 end -->
+        </div>
+    </div>
+    <!-- 按钮注释 -->
+    <div class="pace-foot-annotation">
+        <span>注释：</span>
+        <ul>
+            <li>{:config('template.list_edit')}<p>修改</p></li>
+            <li>{:config('template.list_delete')}<p>删除</p></li>
+            <li>{:config('template.list_enable')}<p>启用</p></li>
+            <li>{:config('template.list_disable')}<p>禁用</p></li>
+        </ul>
+    </div>
+    <!-- 按钮注释 end -->
+</div>
+
+{/block}

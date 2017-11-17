@@ -11,16 +11,11 @@
 
 namespace nbczw8750\generate\command;
 
-use think\App;
-use think\Config;
 use nbczw8750\generate\Generate;
 use think\console\input\Option;
 
 class Service extends Generate
 {
-
-    protected $type = "Service";
-
     protected function configure()
     {
         parent::configure();

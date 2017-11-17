@@ -16,4 +16,5 @@
     "nbczw8750\\generate\\command\\Config",
     "nbczw8750\\generate\\command\\Common",
     "nbczw8750\\generate\\command\\Batch",
+    "nbczw8750\\generate\\command\\Template",
 ]);

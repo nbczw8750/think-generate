@@ -1,0 +1,180 @@
+{extend name="admin@public/base"/}
+{block name="content"}
+<div class="content-container">
+    <!-- 标题 -->
+    <h1 class="page-header">
+        {if condition="isset($data)"}{:lang('edit')}{else/}{:lang('add')}{/if}{:lang('page')}
+    </h1>
+    <!-- 标题 end -->
+    <div class="main-bd">
+        <div class="panel">
+            <div class="panel-body">
+                <!-- 表单 -->
+                <form class="form-edit form-horizontal form" method="post" action="{:__SELF__}">
+                    {if condition="isset($data['id'])"}<input type="hidden" name="id" value="{$data.id|default=''}">{/if}
+                    <div class="">
+                        <table class="table form-table table-borderless" >
+                            <tbody>
+                            <!-- 多栏标题 -->
+                            <tr>
+                                <td colspan="12"><p class="tbody-title">{:lang('page')}{:lang('base')}{:lang('information')}</p></td>
+                            </tr>
+                            <!-- 多栏标题 end -->
+                            <tr class="">
+                                <td class="col-md-1  text-left"><label>string</label></td>
+                                <td class="col-md-5 name-to-chart">
+                                    {:widget("system/Field/render",['field'=>['type'=>"string",'value'=>'','name'=>'title','placeholder'=>''.lang('please input').lang('title'),'is_must'=>1],'data'=> isset($data) ? $data : [] ])}
+                                </td>
+                                <td class="col-md-6">
+                                </td>
+                            </tr>
+                            <tr class="">
+                                <td class="col-md-1  text-left"><label>phone</label></td>
+                                <td class="col-md-5 name-to-chart">
+                                    {:widget("system/Field/render",['field'=>['type'=>"phone",'value'=>'','name'=>'title','placeholder'=>''.lang('please input').lang('phone'),'is_must'=>1],'data'=> isset($data) ? $data : [] ])}
+                                </td>
+                                <td class="col-md-6">
+                                </td>
+                            </tr>
+                            <tr class="">
+                                <td class="col-md-1  text-left"><label>autocomplete</label></td>
+                                <td class="col-md-5 name-to-chart">
+                                    {:widget("system/Field/render",['field'=>['type'=>"autocomplete",'value'=>'','name'=>'title','extra'=>array('url'=>url('json')),'placeholder'=>''.lang('please input').lang('title'),'is_must'=>1],'data'=> isset($data) ? $data : [] ])}
+                                </td>
+                                <td class="col-md-6">
+                                </td>
+                            </tr>
+                            <tr class="">
+                                <td class="col-md-1  text-left"><label>boostrap_commbobox</label></td>
+                                <td class="col-md-5 name-to-chart">
+                                    {:widget("system/Field/render",['field'=>['type'=>"boostrap_commbobox",'value'=>'','name'=>'title','extra'=>array('options'=>['url'=>123213] ,"allowNew"=>true ),'placeholder'=>''.lang('please input').lang('title'),'is_must'=>1],'data'=> isset($data) ? $data : [] ])}
+                                </td>
+                                <td class="col-md-6">
+                                </td>
+                            </tr>
+                            <tr class="">
+                                <td class="col-md-1  text-left"><label>text_commbobox</label></td>
+                                <td class="col-md-5 name-to-chart">
+                                    {:widget("system/Field/render",['field'=>['type'=>"text_commbobox",'value'=>'','name'=>'title','extra'=>['url'=>123213],'placeholder'=>''.lang('please input').lang('title'),'is_must'=>1],'data'=> isset($data) ? $data : [] ])}
+                                </td>
+                                <td class="col-md-6">
+                                </td>
+                            </tr>
+                            <tr class="">
+                                <td class="col-md-1  text-left"><label>date</label></td>
+                                <td class="col-md-5 name-to-chart">
+                                    {:widget("system/Field/render",['field'=>['type'=>"date",'value'=>'','name'=>'date','placeholder'=>''.lang('please input').lang('title'),'is_must'=>1],'data'=> isset($data) ? $data : [] ])}
+
+                                </td>
+                                <td class="col-md-6">
+                                </td>
+                            </tr>
+                            <tr class="">
+                                <td class="col-md-1  text-left"><label>datetime</label></td>
+                                <td class="col-md-5 name-to-chart">
+                                    {:widget("system/Field/render",['field'=>['type'=>"datetime",'value'=>'','name'=>'date','placeholder'=>''.lang('please input').lang('title'),'is_must'=>1],'data'=> isset($data) ? $data : [] ])}
+
+                                </td>
+                                <td class="col-md-6">
+                                </td>
+                            </tr>
+                            <tr class="">
+                                <td class="col-md-1 text-left"><label >picture</label></td>
+                                <td class="col-md-5">
+                                    {:widget("system/Field/render",['field'=>['type'=>"picture",'value'=>'','name'=>'picture'],'data'=> isset($data) ? $data : [] ])}
+                                </td>
+                                <td class="col-md-6">
+                                </td>
+                            </tr>
+                            <tr class="">
+                                <td class="col-md-1 text-left"><label >pictures</label></td>
+                                <td class="col-md-5">
+                                    {:widget("system/Field/render",['field'=>['type'=>"pictures",'value'=>'1,2','name'=>'pictures'],'data'=> isset($data) ? $data : [] ])}
+                                </td>
+                                <td class="col-md-6">
+                                </td>
+                            </tr>
+                            <tr class="">
+                                <td class="col-md-1 text-left"><label >file</label></td>
+                                <td class="col-md-5">
+                                    {:widget("system/Field/render",['field'=>['type'=>"file",'value'=>'','name'=>'file'],'data'=> isset($data) ? $data : [] ])}
+                                </td>
+                                <td class="col-md-6">
+                                </td>
+                            </tr>
+                            <tr class="">
+                                <td class="col-md-1 text-left"><label >region</label></td>
+                                <td class="col-md-5">
+                                    {:widget("system/Field/render",['field'=>['type'=>"region",'value'=>'','value'=>isset($data['province']) ? ($data['province'].','.$data['city'].','.$data['area']) : '','name'=>'province,city,area' , 'extra'=>['url'=>'http://resource.yocent.cn:88','params'=>json_encode(['pid'=>0])] ],'data'=> isset($data) ? $data : [] ])}
+
+                                </td>
+                                <td class="col-md-6">
+                                </td>
+                            </tr>
+                            <tr class="">
+                                <td class="col-md-1 text-left"><label >{:lang('status')}</label></td>
+                                <td class="col-md-5">
+                                    {:widget("system/Field/render",['field'=>['type'=>"radio",'value'=>'1','extra'=>'1:有效;0:无效','name'=>'status'],'data'=> isset($data) ? $data : [] ])}
+                                </td>
+                                <td class="col-md-6">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="col-md-1 text-left w-min-80px"><label>{:lang('keywords')}</label></td>
+                                <td class="col-md-5 chart-name"><div class="required required-wrapper"></div>
+                                    {:widget("system/Field/render",['field'=>['type'=>"string",'value'=>'','name'=>'keywords','placeholder'=>''.lang('please input').lang('keywords'),'is_must'=>1],'data'=> isset($data) ? $data : [] ])}
+                                </td>
+                                <td class="col-md-6"></td>
+                            </tr>
+
+                            <tr class="">
+                                <td class="col-md-1 text-left"><label >{:lang('description')}</label></td>
+                                <td class="col-md-5">
+                                    {:widget("system/Field/render",['field'=>['type'=>"string",'value'=>'','name'=>'description','placeholder'=>''.lang('please input').lang('description'),'is_must'=>1],'data'=> isset($data) ? $data : [] ])}
+                                </td>
+                                <td class="col-md-6">
+                                </td>
+                            </tr>
+                            <tr class="">
+                                <td class="col-md-1 text-left"><label >editor -ueditor</label></td>
+                                <td class="col-md-5">
+                                    {:widget("system/Field/render",['field'=>['type'=>"editor",'value'=>'','name'=>'content','placeholder'=>''.lang('please input').lang('content'),'is_must'=>1 ,'extra'=>['type'=>'ueditor'] ],'data'=> isset($data) ? $data : [] ])}
+                                </td>
+                                <td class="col-md-6">
+                                </td>
+                            </tr>
+                            <tr class="">
+                                <td class="col-md-1 text-left"><label >editor-umeditor</label></td>
+                                <td class="col-md-5">
+                                    {:widget("system/Field/render",['field'=>['type'=>"editor",'value'=>'','name'=>'content','placeholder'=>''.lang('please input').lang('content'),'is_must'=>1  ],'data'=> isset($data) ? $data : [] ])}
+                                </td>
+                                <td class="col-md-6">
+                                </td>
+                            </tr>
+                            <tr class="">
+                                <td class="col-md-1 text-left"><label >{:lang('is_recommend')}</label></td>
+                                <td class="col-md-5 ">
+                                    {:widget("system/Field/render",['field'=>['type'=>"radio",'value'=>'','name'=>'is_recommend','placeholder'=>'','extra'=>'1:推荐;0:不推荐'],'data'=> isset($data) ? $data : [] ])}
+                                </td>
+                                <td class="col-md-6">
+                                </td>
+                            </tr>
+                            <tr class="">
+                                <td class="col-md-1 text-left"><label >{:lang('sort')}</label></td>
+                                <td class="col-md-5 ">
+                                    {:widget("system/Field/render",['field'=>['type'=>"num",'value'=>'','name'=>'sort','placeholder'=>''.lang('please input').lang('sort')],'data'=> isset($data) ? $data : [] ])}
+                                </td>
+                                <td class="col-md-6">
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        {:widget('system/Button/formButtons')}
+                    </div>
+                </form>
+                <!-- 表单 end -->
+            </div>
+        </div>
+    </div>
+</div>
+{/block}

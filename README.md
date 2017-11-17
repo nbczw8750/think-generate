@@ -52,8 +52,17 @@ php think generate:common test/common
 php think generate:common test/common --stub code_template/config.stub
 ~~~
 
+创建模板文件
+执行下面的指令可以生成模板文件 （编辑页）
+php think generate:template test/Blog --view edit
+执行下面的指令可以生成模板文件 （编辑页） 指定类型 默认支持 edit index modal (缺省状态下 默认同--view值相同 不存在类型默认edit)
+php think generate:template test/Blog --view edit --type modal
+自定义模板生成,文件放在相对于think（项目根目录的路径）
+php think generate:common test/common --stub code_template/config.stub
+~~~
+
 ## 批量生成
 ~~~
-参数单个生成命令一样，除了自定义模板参数目前只能指定一个文件
+参数单个生成命令一样，只能指定一个文件
 php think generate:batch test/Blog --table blog
 ~~~

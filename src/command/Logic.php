@@ -11,16 +11,11 @@
 
 namespace nbczw8750\generate\command;
 
-use think\App;
-use think\Config;
 use nbczw8750\generate\Generate;
 use think\console\input\Option;
 
 class Logic extends Generate
 {
-
-    protected $type = "Logic";
-
     protected function configure()
     {
         parent::configure();

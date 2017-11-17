@@ -1,0 +1,56 @@
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <!-- 模态框标题 -->
+    <h4 class="modal-title">{:lang('change')}{:lang('password')}</h4>
+    <!-- 模态框标题 end -->
+</div>
+<!-- 表单 -->
+<form action="{:url('edit_pw')}" method="POST" id="edit-pw-form" data-parsley-validate="true">
+    <div class="modal-body">
+        <!-- 表单 -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-horizontal">
+                    <div class="form-group m-b-10">
+                        <label class="f-w-700 f-s-14 col-md-2 control-label width-100  p-r-0 p-l-0">{:lang('original password')}{:config("template.required")}</label>
+                        <div class="col-md-9">
+                            {:widget("system/Field/render",['field'=>['type'=>"string",'is_must'=>1,'value'=>'','name'=>'oldpassword','placeholder'=>lang('please input').lang('original password')],'data'=> isset($data) ? $data : [] ])}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-horizontal">
+                    <div class="form-group m-b-10">
+                        <label class="f-w-700 f-s-14 col-md-2 control-label width-100  p-r-0 p-l-0">{:lang('new password')}{:config("template.required")}</label>
+                        <div class="col-md-9">
+                            {:widget("system/Field/render",['field'=>['type'=>"password",'is_must'=>1,'value'=>'','name'=>'oldpassword','placeholder'=>lang('please input').lang('new password')],'data'=> isset($data) ? $data : [] ])}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-horizontal">
+                    <div class="form-group m-b-10">
+                        <label class="f-w-700 f-s-14 col-md-2 control-label width-100  p-r-0 p-l-0">{:lang('confirm password')}{:config("template.required")}</label>
+                        <div class="col-md-9">
+                            {:widget("system/Field/render",['field'=>['type'=>"password",'is_must'=>1,'value'=>'','name'=>'repassword','placeholder'=>lang('please input').lang('confirm password')],'data'=> isset($data) ? $data : [] ])}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 脚部按钮 -->
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">{:lang('close')}</button>
+        <button type="submit" class="btn btn-primary modal-form-post" target-form="#edit-pw-form" data-page-type="modal">{:lang('submit change')}
+        </button>
+    </div>
+    <!-- 脚部按钮 end -->
+</form>
+<!-- 表单 end -->

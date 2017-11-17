@@ -22,7 +22,6 @@ use think\console\input\Option;
 abstract class Generate extends Command
 {
 
-    protected $type;
     protected $msg  = "";
 
     abstract protected function getStub();
@@ -54,7 +53,7 @@ abstract class Generate extends Command
         $pathname = $this->getPathName($className);
 
         if (is_file($pathname)) {
-            $this->msg = '<error>' . $this->type . ' already exists!</error>';
+            $this->msg = '<error>' . $pathname . ' already exists!</error>';
             return false;
         }
         if (!is_dir(dirname($pathname))) {
@@ -67,7 +66,7 @@ abstract class Generate extends Command
         }
         file_put_contents($pathname,$content);
 
-        $this->msg = '<info>' . $this->type . ' created successfully.</info>';
+        $this->msg = '<info>' . $pathname . ' created successfully.</info>';
         return true;
 
     }
@@ -84,8 +83,18 @@ abstract class Generate extends Command
      * 获取input
      * @return Input
      */
-    public function getInput(){
-        return $this->input;
+//    public function getInput(){
+//        echo 13123;
+//        print_r($this->input);
+//        return $this->input;
+//    }
+
+    public function setArgument($name,$value){
+        $this->input->setArgument($name,$value);
+    }
+
+    public function setOption($name,$value){
+        $this->input->setOption($name,$value);
     }
 
     //获取输出内容

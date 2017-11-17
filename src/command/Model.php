@@ -15,8 +15,6 @@ use nbczw8750\generate\Generate;
 
 class Model extends Generate
 {
-    protected $type = "Model";
-
     protected function configure()
     {
         parent::configure();

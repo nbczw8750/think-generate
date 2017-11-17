@@ -20,9 +20,6 @@ use think\console\Output;
 
 class Controller extends Generate
 {
-
-    protected $type = "Controller";
-
     protected function configure()
     {
         parent::configure();

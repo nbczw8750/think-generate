@@ -15,6 +15,7 @@ use nbczw8750\generate\Generate;
 use think\console\input\Option;
 use think\console\Input;
 use think\console\Output;
+use think\Config;
 
 class Batch extends Generate
 {
@@ -26,42 +27,64 @@ class Batch extends Generate
         parent::configure();
         $this->setName('generate:batch')
             ->addOption('table', null,Option::VALUE_OPTIONAL, "The table of the database")
+            ->addOption("view",null,Option::VALUE_REQUIRED, "The view is file name")
+            ->addOption("type",null,Option::VALUE_OPTIONAL, "The type is template name")
             ->setDescription('Create all class');
     }
     protected function execute(Input $input, Output $output)
     {
         $name = trim($this->input->getArgument('name'));
-        if (strpos($name, '/') !== false) {
-            $name = str_replace('/', '\\', $name);
-        }
         $moduleName = $this->getModuleName($name);
         $classes = [
-            "\\nbczw8750\\generate\\command\\Model"=>[],
-            "\\nbczw8750\\generate\\command\\Logic"=>[],
-            "\\nbczw8750\\generate\\command\\Service"=>[],
-            "\\nbczw8750\\generate\\command\\Validate"=>[],
-            "\\nbczw8750\\generate\\command\\Controller"=>[],
-            "\\nbczw8750\\generate\\command\\Common"=>["name"=>$moduleName ? $moduleName."/common" : "common"],
-            "\\nbczw8750\\generate\\command\\Config"=>["name"=>$moduleName ? $moduleName."/config" : "config"],
-        ];
-        foreach ($classes as $class => $params){
-            if (class_exists($class)){
-                $this->command = new $class();
-                $this->command->setInput($input);
+            ["command" => "\\nbczw8750\\generate\\command\\Model" , "arguments"=>["name"=>$name] , "options" => [] ],
+            ["command" => "\\nbczw8750\\generate\\command\\Logic" , "arguments"=>["name"=>$name] , "options" => [] ],
+            ["command" => "\\nbczw8750\\generate\\command\\Service" , "arguments"=>["name"=>$name] , "options" => [] ],
+            ["command" => "\\nbczw8750\\generate\\command\\Validate" , "arguments"=>["name"=>$name] , "options" => [] ],
+            ["command" => "\\nbczw8750\\generate\\command\\Controller" , "arguments"=>["name"=>$name] , "options" => [] ],
+            ["command" => "\\nbczw8750\\generate\\command\\Common" , "arguments"=>["name"=>$moduleName ? $moduleName."/common" : "common"] , "options" => [] ],
+            ["command" => "\\nbczw8750\\generate\\command\\Config" , "arguments"=>["name"=>$moduleName ? $moduleName."/config" : "config"] , "options" => [] ],
+            ["command" => "\\nbczw8750\\generate\\command\\Template" , "arguments"=>["name"=>$name] , "options" => ["view"=>"index"] ],
+            ["command" => "\\nbczw8750\\generate\\command\\Template" , "arguments"=>["name"=>$name] , "options" => ["view"=>"edit"] ],
 
-                foreach ($params as $k => $v){
-                    $this->command->getInput()->setArgument($k,$v);
+        ];
+        foreach ($classes as $item){
+            if (class_exists($item["command"])){
+                $command = new $item["command"]();
+                $command->setInput($input);
+
+                foreach ($item["arguments"] as $k => $v){
+                    $command->setArgument($k,$v);
                 }
-                $this->command->make();
-                $output->writeln($this->command->getMsg());
+
+                foreach ($item["options"] as $k => $v){
+                    $command->setOption($k,$v);
+                }
+
+                $command->make();
+                $output->writeln($command->getMsg());
             }else{
-                $output->writeln('<error>' . $class . ' no exists!</error>');
+                $output->writeln('<error>' . $item["command"] . ' no exists!</error>');
             }
 
         }
     }
     protected function getStub(){
 
+    }
+
+    /**
+     * 获取模块名称
+     * @param $namespace
+     * @return null
+     */
+    protected function getModuleName($name)
+    {
+        if (Config::get('app_multi_module')) {
+            $arr = explode('/',$name);
+            return isset($arr[1]) ? $arr[0] : "common" ;
+        }else{
+            return null;
+        }
     }
 
 }

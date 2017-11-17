@@ -16,8 +16,6 @@ use nbczw8750\generate\Generate;
 
 class Common extends Generate
 {
-    protected $type = "Common";
-
     protected function configure()
     {
         parent::configure();

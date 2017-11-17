@@ -11,13 +11,10 @@
 
 namespace nbczw8750\generate\command;
 
-use think\App;
 use nbczw8750\generate\Generate;
 
 class Config extends Generate
 {
-    protected $type = "Config";
-
     protected function configure()
     {
         parent::configure();

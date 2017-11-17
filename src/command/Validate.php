@@ -15,8 +15,6 @@ use nbczw8750\generate\Generate;
 
 class Validate extends Generate
 {
-    protected $type = "Validate";
-
     protected function configure()
     {
         parent::configure();
